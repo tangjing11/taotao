@@ -1,4 +1,4 @@
-package com.taotao.utils;
+package com.taotao.common.util;
 
 import java.util.Random;
 

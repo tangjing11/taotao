@@ -1,21 +1,17 @@
-package com.taotao.common.util;
+package com.taotao.common.pojo;
+
+import java.io.Serializable;
+
 /**
  * 上传图片返回值
  */
-public class PictureResult {
+public class PictureResult implements Serializable {
 
-	/**
-	 * 上传图片返回值，成功：0	失败：1	
-	 */
+
 	private Integer error;
-	/**
-	 * 回显图片使用的url
-	 */
 	private String url;
-	/**
-	 * 错误时的错误消息
-	 */
 	private String message;
+
 	public PictureResult(Integer state, String url) {
 		this.url = url;
 		this.error = state;
@@ -24,6 +20,9 @@ public class PictureResult {
 		this.url = url;
 		this.error = state;
 		this.message = errorMessage;
+	}
+	public PictureResult(){
+
 	}
 	public Integer getError() {
 		return error;
