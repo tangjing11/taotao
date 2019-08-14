@@ -1,6 +1,7 @@
 package com.taotao.controller;
 
-import com.taotao.common.pojo.EasyUiTreeNode;
+import com.taotao.common.pojo.EasyUITreeNode;
+import com.taotao.pojo.TbItemCat;
 import com.taotao.service.ItemCatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,11 +15,13 @@ import java.util.List;
 public class ItemCatController {
     @Autowired
     private ItemCatService itemCatService;
+
+
     @RequestMapping("/item/cat/list")
     @ResponseBody
-    public List<EasyUiTreeNode> getItemCatList(@RequestParam(value="id",defaultValue ="0" ) Long parentId){
-        List<EasyUiTreeNode> result = itemCatService.getCatList(parentId);
-        return  result;
+    //接受参数 名称为id 默认值为 0 赋值给parentId
+    public List<EasyUITreeNode> getItemCatList(@RequestParam(value="id", defaultValue="0")Long parentId){
+        List<EasyUITreeNode> result = itemCatService.getCatList(parentId);
+        return result;
     }
-
 }

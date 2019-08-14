@@ -17,21 +17,20 @@
     <context:component-scan base-package="com.taotao.portal.controller"/>
     <!--注解驱动-->
     <mvc:annotation-driven/>
+    <!-- 加载配置文件 -->
+    <context:property-placeholder location="classpath:*.properties" />
     <!--视图解析器-->
     <bean
             class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-    <!--只要拷贝了页面 而我们的拦截规则为 /的情况下
-        那么 css js jsp  img 也会被拦截
-        我们要在这里配置放行规则
-    -->
+
     <dubbo:application name="taotao-manager-web"/>
     <dubbo:registry protocol="zookeeper"
                     address="49.234.218.10:2181"/>
 
     <!--<dubbo:reference interface="com.taotao.service.ItemService" id="itemService"/>
    -->
-
+    <dubbo:reference interface="com.taotao.content.service.ContentService" id="contentService"  timeout="120000"/>
 </beans>

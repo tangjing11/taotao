@@ -8,11 +8,12 @@ import com.taotao.pojo.TbItemDesc;
 public interface ItemService {
 
     TbItem getItemById(Long itemId);
-    EasyUIResult getItemList(int page, int pageSize);
-    TaotaoResult addItems(TbItem tbItem, String desc);
-    TaotaoResult deleteItems(Long[] ids);
-    TaotaoResult lowerShelf(Long[] ids);
-    TaotaoResult upperShelf(Long[] ids);
-    TaotaoResult updateItemDesc(Long id);
-    TaotaoResult updateItem(TbItem tbItem,String des);
+    TbItemDesc getItemDescByItemId(Long itemId);
+
+    EasyUIResult getItemList(int page, int rows);
+
+    TaotaoResult deleteItems(Integer[] ids);
+
+    TaotaoResult addItems(TbItem tbItem, String desc,String itemParams);
+
 }

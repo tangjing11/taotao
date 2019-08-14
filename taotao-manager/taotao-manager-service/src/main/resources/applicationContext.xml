@@ -19,7 +19,7 @@
 	   http://www.springframework.org/schema/util
        http://www.springframework.org/schema/util/spring-util-4.2.xsd">
 
-    <!-- 加载配置文件 -->
+<!-- 加载配置文件 -->
     <context:property-placeholder location="classpath:*.properties" />
     <!-- 数据库连接池 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
@@ -71,6 +71,47 @@
                      pointcut="execution(* com.taotao.service.*.*(..))" />
     </aop:config>
 
+    <!--solr-->
+    <bean id="httpSolrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer">
+        <constructor-arg name="baseURL" value="http://192.168.65.144:8080/solr"/>
+    </bean>
+
+    <!-- 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供 -->
+    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://192.168.65.155:61616" />
+    </bean>
+
+    <!-- Spring用于管理真正的ConnectionFactory的ConnectionFactory -->
+    <bean id="connectionFactory"
+          class="org.springframework.jms.connection.SingleConnectionFactory">
+        <!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
+        <property name="targetConnectionFactory" ref="targetConnectionFactory" />
+    </bean>
+    <!-- 配置生产者 -->
+    <!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 -->
+        <property name="connectionFactory" ref="connectionFactory" />
+    </bean>
+    <!--这个是队列目的地，点对点的
+      -->
+    <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue"/>
+    </bean>
+
+    <!--这个是主题目的地，一对多的 -->
+    <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="item-change-topic" />
+    </bean>
+
+    <!--redis-->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="host" value="192.168.65.133"></constructor-arg>
+        <constructor-arg name="port" value="6379"></constructor-arg>
+    </bean>
+
+
+
     <!--注册服务
         卖房子的人
     -->
@@ -78,16 +119,18 @@
     <!-- 提供方应用信息，用于计算依赖关系 -->
     <dubbo:application name="taotao-manager-service" />
     <dubbo:registry protocol="zookeeper"
-                    address="49.234.218.10:2181" />
+                    address="192.168.65.100:2181" />
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="20880" />
     <!-- 声明需要暴露的服务接口
         dubbo是以接口来通信的 所以需要一个接口的全类名 加上接口的实现类
      -->
+    <!--商品服务-->
     <dubbo:service interface="com.taotao.service.ItemService" ref="itemServiceImpl" />
+    <!--商品分类服务-->
     <dubbo:service interface="com.taotao.service.ItemCatService" ref="itemCatServiceImpl" />
+    <!--商品图片服务-->
     <dubbo:service interface="com.taotao.service.PictureService" ref="pictureServiceImpl" />
-
-
-
+    <!--商品规格参数模板服务-->
+    <dubbo:service interface="com.taotao.service.ItemParamService" ref="itemParamServiceImpl" />
 </beans>

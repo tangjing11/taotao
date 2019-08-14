@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <table class="easyui-datagrid" id="itemList" title="商品列表" 
        data-options="singleSelect:false,collapsible:true,pagination:true,url:'/item/list',method:'get',pageSize:30,toolbar:toolbar">
+    <%--我esayUi
+        的最大一个特点就是 访问这个页面的时候 先去请求服务器 得到数据以后 在展示页面
+    --%>
     <thead>
         <tr>
         	<th data-options="field:'ck',checkbox:true"></th>
@@ -17,7 +20,7 @@
         </tr>
     </thead>
 </table>
-<div id="itemEditWindow" class="easyui-window" title="编辑商品" data-options="modal:true,closed:true,iconCls:'icon-save',href:'/item-edit'" style="width:80%;height:80%;padding:10px;">
+<div id="itemEditWindow" class="easyui-window" title="编辑商品" data-options="modal:true,closed:true,iconCls:'icon-save',href:'/rest/page/item-edit'" style="width:80%;height:80%;padding:10px;">
 </div>
 <script>
 
@@ -51,6 +54,9 @@
         		$.messager.alert('提示','只能选择一个商品!');
         		return ;
         	}
+
+
+
         	
         	$("#itemEditWindow").window({
         		onLoad :function(){
@@ -60,14 +66,14 @@
         			$("#itemeEditForm").form("load",data);
         			
         			// 加载商品描述
-        			$.getJSON('/item/query/item/desc/'+data.id,function(_data){
+        			$.getJSON('/rest/item/query/item/desc/'+data.id,function(_data){
         				if(_data.status == 200){
         					//UM.getEditor('itemeEditDescEditor').setContent(_data.data.itemDesc, false);
-        					itemEditEditor.html(_data.data);
+        					itemEditEditor.html(_data.data.itemDesc);
         				}
         			});
         			
-        			/*//加载商品规格
+        			//加载商品规格
         			$.getJSON('/rest/item/param/item/query/'+data.id,function(_data){
         				if(_data && _data.status == 200 && _data.data && _data.data.paramData){
         					$("#itemeEditForm .params").show();
@@ -93,7 +99,7 @@
         					 html+= "</ul>";
         					 $("#itemeEditForm .params td").eq(1).html(html);
         				}
-        			});*/
+        			});
         			
         			TAOTAO.init({
         				"pics" : data.image,

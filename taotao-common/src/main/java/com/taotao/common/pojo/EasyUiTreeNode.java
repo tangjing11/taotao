@@ -1,19 +1,20 @@
 package com.taotao.common.pojo;
 
-import com.sun.org.apache.xpath.internal.objects.XString;
-
 import java.io.Serializable;
 
-public class EasyUiTreeNode implements Serializable {
-    private Long id  ;
+public class EasyUITreeNode implements Serializable{
+    //节点id
+    private long id;
+    //节点显示内容
     private String text;
+    //状态 open closed
     private String state;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -35,7 +36,7 @@ public class EasyUiTreeNode implements Serializable {
 
     @Override
     public String toString() {
-        return "EasyUiTreeNode{" +
+        return "EasyUITreeNode{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", state='" + state + '\'' +

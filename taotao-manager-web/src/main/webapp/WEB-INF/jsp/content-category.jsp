@@ -1,4 +1,4 @@
-f<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <div>
 	 <ul id="contentCategory" class="easyui-tree">
     </ul>
@@ -26,7 +26,7 @@ $(function(){
         onAfterEdit : function(node){
         	var _tree = $(this);
         	if(node.id == 0){
-        		// 新增节点
+        		// 新增节点  当前节点id 和当前节点名称
         		$.post("/content/category/create",{parentId:node.parentId,name:node.text},function(data){
         			if(data.status == 200){
         				_tree.tree("update",{

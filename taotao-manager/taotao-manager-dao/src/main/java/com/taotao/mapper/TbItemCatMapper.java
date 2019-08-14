@@ -7,6 +7,5 @@ import org.apache.ibatis.annotations.Select;
 
 public interface TbItemCatMapper {
     @Select("SELECT * FROM tbitemcat WHERE parentId = #{id}")
-    List<TbItemCat> findTbItemByParentId(Long id);
-
+    List<TbItemCat> findTbItemCatByParentId(Long id);
 }

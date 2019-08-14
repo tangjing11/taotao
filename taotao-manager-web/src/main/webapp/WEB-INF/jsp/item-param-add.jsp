@@ -93,6 +93,7 @@
 				}
 			});
 			var url = "/item/param/save/"+$("#itemParamAddTable [name=cid]").val();
+			//JSON.stringify(params) 就是把页面的数据 组装成为 json格式   key:paramData :
 			$.post(url,{"paramData":JSON.stringify(params)},function(data){
 				if(data.status == 200){
 					$.messager.alert('提示','新增商品规格成功!',undefined,function(){

@@ -23,6 +23,14 @@
         <property name="prefix" value="/WEB-INF/jsp/" />
         <property name="suffix" value=".jsp" />
     </bean>
+
+    <!--只要拷贝了页面 而我们的拦截规则为 /的情况下
+        那么 css js jsp  img 也会被拦截
+        我们要在这里配置放行规则
+    -->
+    <mvc:resources location="/WEB-INF/js/" mapping="/js/**"/>
+    <mvc:resources location="/WEB-INF/css/" mapping="/css/**"/>
+
     <!-- 定义文件上传解析器 -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -33,24 +41,27 @@
     </bean>
 
 
-    <!--只要拷贝了页面 而我们的拦截规则为 /的情况下
-        那么 css js jsp  img 也会被拦截
-        我们要在这里配置放行规则
-    -->
-
-    <mvc:resources location="/WEB-INF/js/" mapping="/js/**"/>
-    <mvc:resources location="/WEB-INF/css/" mapping="/css/**"/>
-
 
     <!--dubbo名称
         买房子的人
     -->
     <dubbo:application name="taotao-manager-web"/>
     <dubbo:registry protocol="zookeeper"
-                    address="49.234.218.10:2181" />
-
+                    address="192.168.65.100:2181" />
+    <!--引入商品服务-->
     <dubbo:reference interface="com.taotao.service.ItemService" id="itemService"/>
-    <dubbo:reference interface="com.taotao.service.ItemCatService" id="itemCatService" />
-    <dubbo:reference interface="com.taotao.service.PictureService" id="pictureService" />
+    <!--引入商品分类服务-->
+    <dubbo:reference interface="com.taotao.service.ItemCatService" id="itemCatService"/>
+    <!--引入商品图片服务-->
+    <dubbo:reference interface="com.taotao.service.PictureService" id="pictureService"/>
 
+    <!--引入内容分类服务-->
+    <dubbo:reference interface="com.taotao.content.service.ContentCategoryService" id="contentCategoryService"/>
+
+    <!--引入内容分类服务-->
+    <dubbo:reference interface="com.taotao.content.service.ContentService" id="contentService"/>
+    <!--引入搜索服务-->
+    <dubbo:reference interface="com.taotao.search.service.SearchItemService" id="searchItemService" timeout="30000"/>
+    <!--引入商品规格参数模板服务-->
+    <dubbo:reference interface="com.taotao.service.ItemParamService" id="itemParamService" timeout="30000"/>
 </beans>

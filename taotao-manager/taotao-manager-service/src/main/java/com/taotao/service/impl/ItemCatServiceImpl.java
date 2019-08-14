@@ -1,6 +1,8 @@
 package com.taotao.service.impl;
 
-import com.taotao.common.pojo.EasyUiTreeNode;
+import com.taotao.common.pojo.EasyUITreeNode;
+import com.taotao.common.pojo.ItemCat;
+import com.taotao.common.pojo.ItemCatResult;
 import com.taotao.mapper.TbItemCatMapper;
 import com.taotao.pojo.TbItemCat;
 import com.taotao.service.ItemCatService;
@@ -9,23 +11,66 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 public class ItemCatServiceImpl implements ItemCatService {
     @Autowired
     private TbItemCatMapper tbItemCatMapper;
     @Override
-    public List<EasyUiTreeNode> getCatList(Long id) {
-        List<TbItemCat> tbItemCats = tbItemCatMapper.findTbItemByParentId(id);
-        List<EasyUiTreeNode> result = new ArrayList<>();
-        for (TbItemCat tbItemCat : tbItemCats) {
-            EasyUiTreeNode node = new EasyUiTreeNode();
-            node.setId(tbItemCat.getId());
-            node.setText(tbItemCat.getName());
-            node.setState(tbItemCat.getIsParent()?"closed":"open");
+    public List<EasyUITreeNode> getCatList(Long id) {
+        List<TbItemCat> tbItemCats = tbItemCatMapper.findTbItemCatByParentId(id);
+        List<EasyUITreeNode> result = new ArrayList<EasyUITreeNode>();
+        for (TbItemCat itemCat: tbItemCats) {
+            EasyUITreeNode node = new EasyUITreeNode();
+            //绑定id
+            node.setId(itemCat.getId());
+            //绑定分类名称
+            node.setText(itemCat.getName());
+            node.setState(itemCat.getIsParent()?"closed":"open");
             result.add(node);
         }
-
         return result;
+    }
+
+    @Override
+    public ItemCatResult getItemCatAll(Long parentId) {
+        ItemCatResult result = new ItemCatResult();
+        result.setData(getItemCatList(parentId));
+        return result;
+    }
+    private List getItemCatList(long parentId){
+        List<TbItemCat> tbItemCats = tbItemCatMapper.findTbItemCatByParentId(parentId);
+        List data = new ArrayList();
+        int count = 0;
+        //遍历结果集
+        for (TbItemCat item:tbItemCats) {
+            //创建返回结果集对象  u n i
+            ItemCat itemCat = new ItemCat();
+            if(item.getIsParent()){
+                //设置第一层目录结构的url
+                itemCat.setUrl("/products/"+item.getId()+".html");
+                if(parentId == 0){
+                    //设置第一层目录结构的name
+                    itemCat.setName("<a href='/products/"+item.getId()+".html'>"+item.getName()+"</a>");
+                }else {
+                    //设置二层目录结构的name
+                    itemCat.setName(item.getName());
+                }
+                itemCat.setItem(getItemCatList(item.getId()));
+                //一定是最后一层了
+                data.add(itemCat);
+                count ++;
+                if (parentId == 0 && count >= 14) {
+                    break;
+                }
+
+            }else{
+                //永远是最后一层
+                data.add("/products/"+item.getId()+".html|"+item.getName());
+            }
+
+
+
+        }
+        return data;
     }
 }
